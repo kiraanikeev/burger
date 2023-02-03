@@ -1,0 +1,36 @@
+.header{
+    background: #1C1C21;
+    height: 88px;
+    width: auto;
+    margin: 40px;
+    display: flex;
+    align-items: center;
+    padding: 0 320px;
+    justify-content: center;
+}
+.logo{
+    margin: 0 228px 0 118px;
+}
+.link{
+    display: flex;
+    align-items: center;
+    border: 1px dashed #00000000;
+    border-radius: 40px;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: #8585AD;
+}
+.linkActive{
+    composes: link;
+    color: #F2F2F3;
+}
+.text{
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    margin-left: 9px;
+    width: 100%;
+    white-space: nowrap;
+}
