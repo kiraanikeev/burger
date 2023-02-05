@@ -1,9 +1,9 @@
-import React from 'react'
 import styles from './AppHeader.module.css'
 import { BurgerIcon, ListIcon, ProfileIcon, Logo} from '@ya.praktikum/react-developer-burger-ui-components'
 function AppHeader() {
   return (
     <header className={styles.header}>
+        <nav className={styles.nav}>
         <a className={styles.linkActive}  href="/">
             <BurgerIcon type="primary" />
             <p className={styles.text}>Конструктор</p>
@@ -19,6 +19,7 @@ function AppHeader() {
             <ProfileIcon type="secondary" />
             <p className={styles.text}>Личный кабинет</p>
         </a>
+        </nav>
     </header>
   )
 }
