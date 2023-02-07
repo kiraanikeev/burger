@@ -4,9 +4,7 @@
     margin-top: 60px;
 }
 .externalList{
-    display: flex;
-    gap: 16px;
-    flex-direction: column;
+    margin-left: 45px;
 }
 .itemList{
     display: flex;
@@ -15,13 +13,7 @@
     height: 464px;
     overflow-y: scroll;
     overflow-x: hidden;
-    
-}
-.itemList:first-of-type{
-    overflow-y: visible;
-}
-.itemList:first-child{
-    overflow-y:unset;
+    margin: 16px 0;
 }
 .itemList::-webkit-scrollbar{
     width: 10px;
@@ -39,6 +31,12 @@
 
 .itemElement{
     list-style-type: none;
+    align-items: center;
+    display: flex;
+    margin-left: 15px;
+}
+.DragIcon{
+    margin-right: 8px;
 }
 .countPrice{
     display: flex;
