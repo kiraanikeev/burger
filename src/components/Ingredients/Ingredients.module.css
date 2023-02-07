@@ -21,6 +21,7 @@
     gap: 24px;
     width: 272px;
     height: auto;
+    position: relative;
 }
 .img{
     width: 100%;
@@ -50,8 +51,4 @@ color: #F2F2F3;
     text-align: center;
     color: #F2F2F3;
     height: 48px;
-}
-.m-1{
-    display: flex;
-    background-color: #fff;
 }

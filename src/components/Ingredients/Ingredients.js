@@ -26,7 +26,7 @@ function Ingredients({title, data, type}) {
           return(
             item.type === type && 
             <div key ={item._id} className={styles.oneItem}>
-          <Counter count={1} size="default" extraClass="m-1" />
+          <Counter count={1} size="default" extraClass={styles.m-1} />
               <img src={item.image} className={styles.img} alt={item.name}/>
     <div className={styles.priceSection}>
      <p className={styles.price}>{item.price}</p>

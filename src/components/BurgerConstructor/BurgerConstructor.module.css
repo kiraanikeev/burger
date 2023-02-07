@@ -1,4 +1,48 @@
 .main{
     width: 600px;
     height: 912px;
+    margin-top: 60px;
+}
+.itemList{
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+    list-style-type: none;
+    height: 656px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    
+}
+.itemList::-webkit-scrollbar{
+    width: 10px;
+    height: 464px;
+}
+.itemList::-webkit-scrollbar-track{
+    background: #2F2F37;
+    height: 464px;
+}
+.itemList::-webkit-scrollbar-thumb{
+    background-color: #8585AD;
+    border: 3px solid #8585AD;
+ 
+}
+.countPrice{
+    display: flex;
+    font-family: 'Iceland';
+font-style: normal;
+font-weight: 400;
+font-size: 48px;
+line-height: 36px;
+align-items: center;
+margin-right: 40px;
+}
+.icon{
+    margin-left: 8px; 
+}
+.priceLine{
+    display: flex;
+    margin-top: 40px;
+    justify-content: right;
+    margin-right: 15px;
+
 }
