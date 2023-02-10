@@ -1,30 +1,50 @@
 import React, { useState } from 'react'
 import styles from './BurgerIngredients.module.css'
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
-import { data } from '../utils/data'
 import Ingredients from '../Ingredients/Ingredients'
+import PropTypes from 'prop-types';
+import Modal from '../Modal/Modal';
+import ModalIngridients from '../ModalIngridients/ModalIngridients';
 
-function BurgerIngredients() {
-  const [selectIngredients, setSelectIngredients] = useState('Булки')
+function BurgerIngredients({dataIngridients}) {
+
+  const ingredientPropTypes = PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    type: PropTypes.string.isRequired,
+});
+
+BurgerIngredients.propTypes = {
+  dataIngridients: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired
+}
+
+const [current, setCurrent] = useState('one');
+const [openModal, setOpenModal] = useState(false);
+const [currentIngredient, setCurrentIngredient] = useState('');
   return (
     <div className={styles.main}>
       <h2 className={styles.title}>Соберите бургер</h2>
-     <a href={selectIngredients}> <div className={styles.selector}>
-      <Tab value="Булки" active={selectIngredients === 'Булки'} onClick={()=>setSelectIngredients("Булки")}>
-      Булки
+      <div className={styles.selector}>
+     <Tab value='one' active={current === 'one'} onClick={setCurrent}>
+          Булки
       </Tab>
-      <Tab value="Соусы" active={selectIngredients === 'Соусы'} onClick={()=>setSelectIngredients("Соусы")}>
-      Соусы
+      <Tab value='two' active={current === 'two'} onClick={setCurrent}>
+          Соусы
       </Tab>
-      <Tab value="Начинки" active={selectIngredients === 'Начинки'} onClick={()=>setSelectIngredients("Начинки")}>
-      Начинки
+      <Tab value='three' active={current === 'three'} onClick={setCurrent}>
+          Начинки
       </Tab>
-    </div></a>
+    </div>
     <section className={styles. ingredientsTypes}>
-    <Ingredients title="Булки" data={data} type='bun'/>
-    <Ingredients title="Соусы" data={data} type='sauce'/>
-    <Ingredients title="Начинки" data={data} type='main'/>
+    <Ingredients title="Булки" dataIngridients={dataIngridients} type='bun' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
+    <Ingredients title="Соусы" dataIngridients={dataIngridients} type='sauce' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
+    <Ingredients title="Начинки" dataIngridients={dataIngridients} type='main' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
     </section>
+    {openModal && currentIngredient &&
+    <Modal setOpenModal={setOpenModal} title="Детали ингредиента" >
+      <ModalIngridients currentIngredient={currentIngredient}/>
+      </Modal>}
       </div>
   )
 }
