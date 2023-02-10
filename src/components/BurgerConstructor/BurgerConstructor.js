@@ -1,8 +1,11 @@
-import React, {useMemo} from 'react'
+import React, {useMemo, useState} from 'react'
 import styles from './BurgerConstructor.module.css'
 import { data } from '../utils/data'
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
+import Modal from '../Modal/Modal';
+import OrderDetails from '../OrderDetails/OrderDetails';
 function BurgerConstructor() {
+  const [openModal, setOpenModal] = useState(false);
   const count = useMemo(() => data.reduce((accum, item) => accum + item.price, 0), [data])
   return (
     <div className={styles.main}>
@@ -49,10 +52,14 @@ function BurgerConstructor() {
         </div>
         
       </div>
-      <Button htmlType="button" type="primary" size="large">
+      <Button onClick={()=>setOpenModal(true)}htmlType="button" type="primary" size="large">
       Оформить заказ
       </Button>
       </div>
+      {openModal && 
+      <Modal title='' setOpenModal={setOpenModal}>
+        <OrderDetails />
+      </Modal>}
       </div>
   )
 }
