@@ -1,0 +1,60 @@
+.main{
+    width: 600px;
+    height: 912px;
+    margin-top: 60px;
+}
+.externalList{
+    margin-left: 45px;
+}
+.itemList{
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+    height: 464px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: 16px 0;
+}
+.itemList::-webkit-scrollbar{
+    width: 10px;
+    height: 464px;
+}
+.itemList::-webkit-scrollbar-track{
+    background: #2F2F37;
+    height: 464px;
+}
+.itemList::-webkit-scrollbar-thumb{
+    background-color: #8585AD;
+    border: 3px solid #8585AD;
+ 
+}
+
+.itemElement{
+    list-style-type: none;
+    align-items: center;
+    display: flex;
+    margin-left: 15px;
+}
+.DragIcon{
+    margin-right: 8px;
+}
+.countPrice{
+    display: flex;
+    font-family: 'Iceland';
+font-style: normal;
+font-weight: 400;
+font-size: 48px;
+line-height: 36px;
+align-items: center;
+margin-right: 40px;
+}
+.icon{
+    margin-left: 8px; 
+}
+.priceLine{
+    display: flex;
+    margin-top: 40px;
+    justify-content: right;
+    margin-right: 15px;
+
+}

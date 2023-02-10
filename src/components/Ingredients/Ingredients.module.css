@@ -1,0 +1,54 @@
+.main{
+    display: block;
+}
+.title{
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 40px;
+    color: #F2F2F3;
+}
+.oneType{
+    width: 600px;
+    height: auto;
+    margin: 24px 0 40px;
+    display: flex;
+    flex-wrap: wrap;
+}
+.oneItem{
+    display: block;
+    gap: 24px;
+    width: 272px;
+    height: auto;
+    position: relative;
+}
+.img{
+    width: 100%;
+    margin-bottom: 4px;
+}
+.priceSection{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+.price{
+    margin-right: 8px;
+    font-family: 'Iceland';
+font-style: normal;
+font-weight: 400;
+font-size: 28px;
+line-height: 24px;
+color: #F2F2F3;
+}
+.name{
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: #F2F2F3;
+    height: 48px;
+}

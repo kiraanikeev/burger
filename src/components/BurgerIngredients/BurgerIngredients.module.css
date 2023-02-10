@@ -1,0 +1,25 @@
+.main{
+    width: 600px;
+    height: auto;
+}
+
+.selector{
+    display: flex;
+    margin: 20px 0 40px;
+}
+.ingredientsTypes{
+    height: 686px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+
+}
+.ingredientsTypes::-webkit-scrollbar{
+    width: 10px;
+}
+.ingredientsTypes::-webkit-scrollbar-track{
+    background: #2F2F37;
+}
+.ingredientsTypes::-webkit-scrollbar-thumb{
+    background-color: #8585AD;
+    border: 3px solid #8585AD
+}
