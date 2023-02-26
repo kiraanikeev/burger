@@ -4,6 +4,9 @@ import ModalOverlay from '../ModalOverlay/ModalOverlay';
 import { createPortal } from "react-dom";
 import styles from "./Modal.module.css";
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+
+const modalRoot = document.getElementById('modals')
+
 function Modal({title, setOpenModal, children}) {
     Modal.propTypes = {
         setOpenModal: PropTypes.func.isRequired, 
@@ -45,7 +48,7 @@ function Modal({title, setOpenModal, children}) {
     </div>
     </div>
     </div>
-    , document.body
+    , modalRoot
   )
 }
 

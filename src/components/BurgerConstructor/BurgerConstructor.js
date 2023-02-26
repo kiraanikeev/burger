@@ -64,4 +64,4 @@ function BurgerConstructor() {
   )
 }
 
-export default BurgerConstructor
+export default React.memo(BurgerConstructor)

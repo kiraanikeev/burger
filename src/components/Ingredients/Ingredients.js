@@ -47,4 +47,4 @@ setOpenModal(true)
   )
 }
 
-export default Ingredients
+export default React.memo(Ingredients)

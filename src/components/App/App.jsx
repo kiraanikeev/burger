@@ -12,7 +12,7 @@ function App() {
      }
       )
   },[])
-  console.log('dataIngridients',dataIngridients)
+
   return (
     <div className={styles.App}>
       <AppHeader/>
