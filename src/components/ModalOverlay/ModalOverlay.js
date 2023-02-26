@@ -5,7 +5,6 @@ function ModalOverlay ({ setOpenModal }) {
     ModalOverlay.propTypes = {
         setOpenModal: PropTypes.func.isRequired
     }
-    console.log('ModalOverlay')
     return (
         <div className={styles.overlay} onClick={()=>setOpenModal(false)}></div>
     )
