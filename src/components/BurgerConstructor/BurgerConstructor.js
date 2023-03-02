@@ -3,35 +3,36 @@ import styles from './BurgerConstructor.module.css'
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchOrder } from '../../asyncActions/order';
 function BurgerConstructor() {
+  const dispatch = useDispatch()
   const [openModal, setOpenModal] = useState(false);
-  const [data, setDataIngridients] = useState([])
-  const ingredients  = useSelector((store) => store.ingredients.ingredients)
-console.log('data', data)
-  useMemo(()=>{
+  const constructorIngredients  = useSelector((store) => store.constructor.constructorIngredients)
+  const orderNumber = useSelector(store => store.order.order)
+  const count = useMemo(() => constructorIngredients && constructorIngredients.reduce((accum, item) => accum + item.price, 0), [constructorIngredients])
 
-    setDataIngridients(ingredients?.data)
-    },[ingredients])
-  // const count = useMemo(() => data && data.reduce((accum, item) => accum + item.price, 0), [data])
-  console.log('ingredients' ,ingredients)
-  console.log('data', data)
+  const createOrder = () =>{
+    setOpenModal(true)
+    const idArray = constructorIngredients.map(item => item._id)
+    dispatch(fetchOrder(idArray))
+  }
   return (
     <div className={styles.main}>
-     {data && data.length && <div>
+     {constructorIngredients && constructorIngredients.length && <div>
       <span className={styles.externalList}>
-        {data && 
+        {constructorIngredients && 
         <ConstructorElement
         isLocked={true}
         type="top"
-        text={data[0].name}
-        price={data[0].price}
-        thumbnail={data[0].image}
+        text={constructorIngredients[0].name}
+        price={constructorIngredients[0].price}
+        thumbnail={constructorIngredients[0].image}
           />}</span>
       <ul className={styles.itemList}>
-        {data && data.map((item, index)=>{
+        {constructorIngredients && constructorIngredients.map((item, index)=>{
           return(
-            index > 0 && index < data.length - 1 &&
+            index > 0 && index < constructorIngredients.length - 1 &&
             <li className={styles.itemElement} key={item._id}>
                 <span  className={styles.DragIcon}><DragIcon type="primary"/></span>
                 <ConstructorElement
@@ -45,30 +46,30 @@ console.log('data', data)
         })}
       </ul>
       <span className={styles.externalList}>
-      {data && 
+      {constructorIngredients && 
         <ConstructorElement
         isLocked={true}
         type="bottom"
-        text={data[data.length - 1].name}
-        price={data[data.length - 1].price}
-        thumbnail={data[data.length - 1].image}
+        text={constructorIngredients[constructorIngredients.length - 1].name}
+        price={constructorIngredients[constructorIngredients.length - 1].price}
+        thumbnail={constructorIngredients[constructorIngredients.length - 1].image}
           />}
       </span>
       <div className={styles.priceLine}>
       <div className={styles.countPrice}>
-        {/* <span>{count}</span> */}
+        <span>{count}</span>
         <div className={styles.icon}>
         <CurrencyIcon type="primary"/>
         </div>
         
       </div>
-      <Button onClick={()=>setOpenModal(true)}htmlType="button" type="primary" size="large">
+      <Button onClick={()=>createOrder()} htmlType="button" type="primary" size="large">
       Оформить заказ
       </Button>
       </div>
       {openModal && 
       <Modal title='' setOpenModal={setOpenModal}>
-        <OrderDetails />
+        <OrderDetails orderNumber={orderNumber} />
       </Modal>}
       </div>}
       </div>

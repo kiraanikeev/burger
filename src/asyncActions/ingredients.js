@@ -1,3 +1,4 @@
+import { getBurgerConstructorAction } from "../store/burgerConstructorReducer";
 import { addIngredietntsAction } from "../store/ingridientsReducer";
 
 const ingredientsUrl = 'https://norma.nomoreparties.space/api/ingredients'
@@ -10,7 +11,10 @@ export const fetchIngredients = () => {
             }
         })
         .then((response) => response.json())
-        .then(json => dispatch(addIngredietntsAction(json)))
+        .then(json => {
+            dispatch(addIngredietntsAction(json))
+            dispatch(getBurgerConstructorAction(json))
+        })
         .catch((error) => {
             console.error('Error:', error);
           })

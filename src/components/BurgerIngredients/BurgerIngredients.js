@@ -15,15 +15,12 @@ const [openModal, setOpenModal] = useState(false);
 const [currentIngredient, setCurrentIngredient] = useState('');
 
   useMemo(()=>{
-    console.log('ingredients' ,ingredients?.data)
     setDataIngridients(ingredients?.data)
     },[ingredients])
 
 const onTabClick = (tab) => {
   setCurrent(tab)
-  console.log('tab',tab)
   const element = document.getElementById(tab)
-  console.log('element',element)
   if(element) element.scrollIntoView({behavior: 'smooth'})
 }
 
