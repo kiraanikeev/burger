@@ -1,14 +1,24 @@
 import React, {useMemo, useState} from 'react'
 import styles from './BurgerConstructor.module.css'
-import { data } from '../utils/data'
 import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import Modal from '../Modal/Modal';
 import OrderDetails from '../OrderDetails/OrderDetails';
+import { useSelector } from 'react-redux';
 function BurgerConstructor() {
   const [openModal, setOpenModal] = useState(false);
-  const count = useMemo(() => data.reduce((accum, item) => accum + item.price, 0), [data])
+  const [data, setDataIngridients] = useState([])
+  const ingredients  = useSelector((store) => store.ingredients.ingredients)
+console.log('data', data)
+  useMemo(()=>{
+
+    setDataIngridients(ingredients?.data)
+    },[ingredients])
+  // const count = useMemo(() => data && data.reduce((accum, item) => accum + item.price, 0), [data])
+  console.log('ingredients' ,ingredients)
+  console.log('data', data)
   return (
     <div className={styles.main}>
+     {data && data.length && <div>
       <span className={styles.externalList}>
         {data && 
         <ConstructorElement
@@ -46,7 +56,7 @@ function BurgerConstructor() {
       </span>
       <div className={styles.priceLine}>
       <div className={styles.countPrice}>
-        <span>{count}</span>
+        {/* <span>{count}</span> */}
         <div className={styles.icon}>
         <CurrencyIcon type="primary"/>
         </div>
@@ -60,6 +70,7 @@ function BurgerConstructor() {
       <Modal title='' setOpenModal={setOpenModal}>
         <OrderDetails />
       </Modal>}
+      </div>}
       </div>
   )
 }

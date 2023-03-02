@@ -2,28 +2,22 @@ import React, { useState, useMemo } from 'react'
 import styles from './BurgerIngredients.module.css'
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import Ingredients from '../Ingredients/Ingredients'
-import PropTypes from 'prop-types';
 import Modal from '../Modal/Modal';
 import ModalIngridients from '../ModalIngridients/ModalIngridients';
+import { useSelector } from 'react-redux';
+function BurgerIngredients() {
 
-function BurgerIngredients({dataIngridients}) {
+  const [dataIngridients, setDataIngridients] = useState([])
+  const ingredients  = useSelector((store) => store.ingredients.ingredients);
 
-  const ingredientPropTypes = PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    type: PropTypes.string.isRequired,
-});
-
-BurgerIngredients.propTypes = {
-  dataIngridients: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired
-}
-// const buns = useMemo(()=> dataIngridients.filter(item=>item.type === "bun"), [dataIngridients])
-// const mains = useMemo(()=> dataIngridients.filter(item=>item.type === "main"), [dataIngridients])
-// const sauces = useMemo(()=> dataIngridients.filter(item=>item.type === "sauce"), [dataIngridients])
 const [current, setCurrent] = useState('bun');
 const [openModal, setOpenModal] = useState(false);
 const [currentIngredient, setCurrentIngredient] = useState('');
+
+  useMemo(()=>{
+    console.log('ingredients' ,ingredients?.data)
+    setDataIngridients(ingredients?.data)
+    },[ingredients])
 
 const onTabClick = (tab) => {
   setCurrent(tab)
