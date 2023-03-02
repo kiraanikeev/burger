@@ -4,19 +4,26 @@ import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import Ingredients from '../Ingredients/Ingredients'
 import Modal from '../Modal/Modal';
 import ModalIngridients from '../ModalIngridients/ModalIngridients';
-import { useSelector } from 'react-redux';
+import { useSelector,useDispatch } from 'react-redux';
+import { deleteCurrentIngredietntsAction } from '../../store/currentIngredientReducer';
 function BurgerIngredients() {
-
+  const dispatch = useDispatch()
   const [dataIngridients, setDataIngridients] = useState([])
   const ingredients  = useSelector((store) => store.ingredients.ingredients);
 
-const [current, setCurrent] = useState('bun');
-const [openModal, setOpenModal] = useState(false);
-const [currentIngredient, setCurrentIngredient] = useState('');
+  const [current, setCurrent] = useState('bun');
+  const [openModal, setOpenModal] = useState(false);
+  const [currentIngredient, setCurrentIngredient] = useState('');
 
   useMemo(()=>{
     setDataIngridients(ingredients?.data)
     },[ingredients])
+
+    useMemo(()=>{
+    if(!openModal){
+    dispatch(deleteCurrentIngredietntsAction())
+    }
+    },[openModal])
 
 const onTabClick = (tab) => {
   setCurrent(tab)
@@ -46,11 +53,11 @@ const onTabClick = (tab) => {
       </div>
     </div>
     <section className={styles. ingredientsTypes}>
-    <Ingredients title="Булки" dataIngridients={dataIngridients} type='bun' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
-    <Ingredients title="Соусы" dataIngridients={dataIngridients} type='sauce' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
-    <Ingredients title="Начинки" dataIngridients={dataIngridients} type='main' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
+    <Ingredients title="Булки" dataIngridients={dataIngridients} type='bun' setOpenModal={setOpenModal}/>
+    <Ingredients title="Соусы" dataIngridients={dataIngridients} type='sauce' setOpenModal={setOpenModal}/>
+    <Ingredients title="Начинки" dataIngridients={dataIngridients} type='main' setOpenModal={setOpenModal}/>
     </section>
-    {openModal && currentIngredient &&
+    {openModal && 
     <Modal setOpenModal={setOpenModal} title="Детали ингредиента" >
       <ModalIngridients currentIngredient={currentIngredient}/>
       </Modal>}

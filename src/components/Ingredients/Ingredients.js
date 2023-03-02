@@ -2,8 +2,10 @@ import React from 'react'
 import styles from './Ingredients.module.css'
 import PropTypes from 'prop-types';
 import { CurrencyIcon, Counter  } from '@ya.praktikum/react-developer-burger-ui-components'
-function Ingredients({title, dataIngridients, type, setCurrentIngredient, setOpenModal}) {
-
+import { useDispatch } from 'react-redux';
+import { setCurrentIngredietntsAction } from '../../store/currentIngredientReducer';
+function Ingredients({title, dataIngridients, type, setOpenModal}) {
+const dispatch = useDispatch()
   const dataPropTypes = PropTypes.shape({
     name: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
@@ -15,12 +17,11 @@ function Ingredients({title, dataIngridients, type, setCurrentIngredient, setOpe
     title: PropTypes.string.isRequired,
     type: PropTypes.string.isRequired,
     setOpenModal: PropTypes.func.isRequired,
-    setCurrentIngredient: PropTypes.func.isRequired,
     dataIngridients: PropTypes.arrayOf(dataPropTypes).isRequired
   }
 
 const ingridientsHandle = (item)=>{
-setCurrentIngredient(item)
+dispatch(setCurrentIngredietntsAction(item))
 setOpenModal(true)
 }
   return (
