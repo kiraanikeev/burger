@@ -1,10 +1,18 @@
-import React from 'react'
+import React, { forwardRef } from 'react'
 import styles from './Ingredients.module.css'
 import PropTypes from 'prop-types';
 import { CurrencyIcon, Counter  } from '@ya.praktikum/react-developer-burger-ui-components'
 import { useDispatch } from 'react-redux';
 import { setCurrentIngredietntsAction } from '../../store/currentIngredientReducer';
-function Ingredients({title, dataIngridients, type, setOpenModal}) {
+const Ingredients =  forwardRef(function Ingredients(props, ref) {
+
+  const {
+      title,
+      dataIngridients,
+      type, 
+      setOpenModal
+       } = props;
+
 const dispatch = useDispatch()
   const dataPropTypes = PropTypes.shape({
     name: PropTypes.string.isRequired,
@@ -27,7 +35,7 @@ setOpenModal(true)
   return (
     <div className={styles.main}>
           <h3 className={styles.title}>{title}</h3>
-          <div className={styles.oneType}>
+          <div className={styles.oneType} ref={ref}>
 
         {dataIngridients && dataIngridients.map(item=>{
           return(
@@ -46,6 +54,6 @@ setOpenModal(true)
      </div>
     </div>
   )
-}
+})
 
 export default React.memo(Ingredients)
