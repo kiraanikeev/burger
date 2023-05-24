@@ -1,14 +1,14 @@
-import styles from "./ModalOverlay.module.css";
+import styles from "./ModalOverlay.module.scss";
 import PropTypes from 'prop-types';
 
-function ModalOverlay ({ setOpenModal }) {
-    ModalOverlay.propTypes = {
-        setOpenModal: PropTypes.func.isRequired
-    }
+function ModalOverlay ({ onClose }) {
     return (
-        <div className={styles.overlay} onClick={()=>setOpenModal(false)}></div>
+        <div className={styles.overlay} onClick={onClose}></div>
     )
 }
 
+ModalOverlay.propTypes = {
+    onClose: PropTypes.func.isRequired
+}
 
 export default ModalOverlay;

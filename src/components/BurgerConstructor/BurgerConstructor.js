@@ -1,79 +1,126 @@
-import React, {useMemo, useState} from 'react'
-import styles from './BurgerConstructor.module.css'
-import { ConstructorElement, Button, CurrencyIcon, DragIcon } from '@ya.praktikum/react-developer-burger-ui-components'
-import Modal from '../Modal/Modal';
-import OrderDetails from '../OrderDetails/OrderDetails';
+import { useState, useMemo, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDrop } from "react-dnd";
+import styles from "./BurgerConstructor.module.scss";
+import { ConstructorElement, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
+import Modal from "../Modal/Modal";
+import OrderDetails from "../OrderDetails/OrderDetails";
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchOrder } from '../../asyncActions/order';
-function BurgerConstructor() {
-  const dispatch = useDispatch()
-  const [openModal, setOpenModal] = useState(false);
-  const constructorIngredients  = useSelector((store) => store.constructor.constructorIngredients)
-  const orderNumber = useSelector(store => store.order.order)
-  const count = useMemo(() => constructorIngredients && constructorIngredients.reduce((accum, item) => accum + item.price, 0), [constructorIngredients])
+import { addConstructorIngredientsAction, removeConstructorIngredientAction } from "../../services/actions/burgerConstructorActions";
+import { orderNumberAsync } from "../../services/asyncActions/order";
+import { increaseIngredientCountAction, decreaseIngredientCountAction } from "../../services/actions/ingredientsActions";
+import ConstructorIngredient from "../constructorIngredient/ConstructorIngredient";
+import { useCookies } from 'react-cookie';
 
-  const createOrder = () =>{
-    setOpenModal(true)
-    const idArray = constructorIngredients.map(item => item._id)
-    dispatch(fetchOrder(idArray))
-  }
-  return (
-    <div className={styles.main}>
-     {constructorIngredients && constructorIngredients.length && <div>
-      <span className={styles.externalList}>
-        {constructorIngredients && 
-        <ConstructorElement
-        isLocked={true}
-        type="top"
-        text={constructorIngredients[0].name}
-        price={constructorIngredients[0].price}
-        thumbnail={constructorIngredients[0].image}
-          />}</span>
-      <ul className={styles.itemList}>
-        {constructorIngredients && constructorIngredients.map((item, index)=>{
-          return(
-            index > 0 && index < constructorIngredients.length - 1 &&
-            <li className={styles.itemElement} key={item._id}>
-                <span  className={styles.DragIcon}><DragIcon type="primary"/></span>
-                <ConstructorElement
-                  isLocked={false}
-                  text={item.name}
-                  price={item.price}
-                  thumbnail={item.image}
-                  />
-            </li>
-          )
-        })}
-      </ul>
-      <span className={styles.externalList}>
-      {constructorIngredients && 
-        <ConstructorElement
-        isLocked={true}
-        type="bottom"
-        text={constructorIngredients[constructorIngredients.length - 1].name}
-        price={constructorIngredients[constructorIngredients.length - 1].price}
-        thumbnail={constructorIngredients[constructorIngredients.length - 1].image}
-          />}
-      </span>
-      <div className={styles.priceLine}>
-      <div className={styles.countPrice}>
-        <span>{count}</span>
-        <div className={styles.icon}>
-        <CurrencyIcon type="primary"/>
-        </div>
-        
-      </div>
-      <Button onClick={()=>createOrder()} htmlType="button" type="primary" size="large">
-      Оформить заказ
-      </Button>
-      </div>
-      {openModal && 
-      <Modal title='' setOpenModal={setOpenModal}>
-        <OrderDetails orderNumber={orderNumber} />
-      </Modal>}
-      </div>}
-      </div>
-  )
+function BurgerConstructor() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const [cookies, setCookie, removeCookie] = useCookies(['stellarBurger']);
+    const [isOpen, setIsOpen] = useState(false);
+    const orderNumber = useSelector(store => store.orderReducer.order);
+    const ingredients = useSelector(store => (store.burgerConstructorReducer.constructorIngredients));
+    const isAuth = useSelector(store => store.authReducer.isUserAuth);
+
+    const [movedIngredient, setMovedIngredient] = useState(null)
+    const [{ isHover }, dropTarget] = useDrop({
+        accept: "ingredient",
+        drop(item) {
+            const itemCopy = JSON.parse(JSON.stringify(item.item));
+
+            const burgerBun = ingredients?.find(el => el.type === 'bun')
+            if (burgerBun !== undefined && itemCopy.type === 'bun') {
+                dispatch(removeConstructorIngredientAction(burgerBun.constructorId))
+                dispatch(decreaseIngredientCountAction(burgerBun._id))
+                dispatch(addConstructorIngredientsAction(itemCopy));
+                dispatch(increaseIngredientCountAction(itemCopy._id));
+            } else {
+                dispatch(addConstructorIngredientsAction(itemCopy));
+                dispatch(increaseIngredientCountAction(itemCopy._id));
+            }
+
+        },
+        collect: monitor => ({
+            isHover: monitor.isOver(),
+        })
+    });
+
+
+    const handleSubmit = (evt) => {
+        evt.preventDefault()
+
+        if (isAuth) {
+            const allIngredientsArray = [];
+            allIngredientsArray.push(currentBun, ...ingredientsWithoutBuns, currentBun)
+
+            const idArray = allIngredientsArray.map(item => item._id)
+
+            dispatch(orderNumberAsync(idArray, cookies.accessToken))
+            setIsOpen(true)
+        } else navigate('/login')
+
+    }
+
+    function onClose() {
+        setIsOpen(false)
+    }
+
+    const currentBun = useMemo(() => ingredients.find(item => item.type === 'bun'), [ingredients]);
+
+    const ingredientsWithoutBuns = useMemo(() => ingredients.filter(item => item.type !== 'bun'), [ingredients])
+
+    const priceCount = useMemo(() => ingredients.reduce((total, item) => {
+        if (item.type !== 'bun') {
+            return total + item.price
+        } else if (currentBun._id === item._id) return total + (item.price * 2)
+        else return total;
+    }, 0), [ingredients])
+
+    return (
+        <form className={styles.burgerConstructor} onSubmit={handleSubmit} ref={dropTarget}>
+
+            <div className={styles.burgerBunTop} >
+                {currentBun &&
+                    <ConstructorElement
+                        type="top"
+                        isLocked={true}
+                        text={`${currentBun.name} (верх)`}
+                        price={currentBun.price}
+                        thumbnail={currentBun.image}
+                    />}
+            </div>
+            <ul className={styles.ingredientsList} >
+                {ingredientsWithoutBuns.map((item, index) => {
+                    return (
+                        <ConstructorIngredient key={item.constructorId} item={item} index={index} movedIngredient={movedIngredient} setMovedIngredient={setMovedIngredient} />
+                    )
+                })}
+            </ul>
+            <div className={styles.burgerBunBottom} >
+                {currentBun &&
+                    <ConstructorElement
+                        type="bottom"
+                        isLocked={true}
+                        text={`${currentBun.name} (низ)`}
+                        price={currentBun.price}
+                        thumbnail={currentBun.image}
+                    />}
+            </div>
+            <div className={styles.burgerPrice}>
+                <span>{priceCount}</span>
+                <CurrencyIcon type="primary" />
+            </div>
+            <button type="submit" className={styles.submitButton}
+                disabled={currentBun !== undefined ? false : true}
+                title={currentBun !== undefined ? "Оформить заказ" : "Необходимо добавить булку"}>Оформить заказ</button>
+            {isOpen && orderNumber !== null &&
+                <Modal onClose={onClose}>
+                    <OrderDetails orderNumber={orderNumber} />
+                </Modal>
+            }
+        </form>
+    )
 }
 
-export default React.memo(BurgerConstructor)
+
+export default BurgerConstructor;
