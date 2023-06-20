@@ -1,27 +1,35 @@
-import styles from './AppHeader.module.css'
-import { BurgerIcon, ListIcon, ProfileIcon, Logo} from '@ya.praktikum/react-developer-burger-ui-components'
+import React from "react";
+import styles from './AppHeader.module.scss'
+import { Logo, BurgerIcon, ProfileIcon, ListIcon } from '@ya.praktikum/react-developer-burger-ui-components'
+import { Link, NavLink } from "react-router-dom";
+
 function AppHeader() {
-  return (
-    <header className={styles.header}>
-        <nav className={styles.nav}>
-        <a className={styles.linkActive}  href="/">
-            <BurgerIcon type="primary" />
-            <p className={styles.text}>Конструктор</p>
-        </a>   
-        <a className={styles.link}  href="/">
-            <ListIcon type="secondary" />
-            <p className={styles.text}>Лента заказов</p>
-        </a>
-        <a className={styles.logo}  href="/">
-            <Logo />
-        </a>
-        <a className={styles.link}  href="/"> 
-            <ProfileIcon type="secondary" />
-            <p className={styles.text}>Личный кабинет</p>
-        </a>
-        </nav>
-    </header>
-  )
+    return (
+        <header className={styles.header}>
+            <nav className={styles.navigation}>
+                <NavLink to='/' className={({ isActive }) =>
+                    isActive ? styles.activeLink : styles.link
+                }>
+                    <BurgerIcon type="primary" />
+                    Конструктор
+                </NavLink>
+                <a className={styles.link}>
+                    <ListIcon type="primary" />
+                    Лента заказов</a>
+            </nav>
+
+            <Link to='/' className={styles.logo}>
+                <Logo />
+            </Link>
+
+            <NavLink to='/profile' className={({ isActive }) =>
+                    isActive ? styles.activeLink : styles.account
+                }>
+                <ProfileIcon type="secondary" />
+                Личный кабинет
+            </NavLink>
+        </header>
+    );
 }
 
-export default AppHeader
+export default AppHeader;

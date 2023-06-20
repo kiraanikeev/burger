@@ -1,70 +1,96 @@
-import React, { useState, useMemo } from 'react'
-import styles from './BurgerIngredients.module.css'
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
-import Ingredients from '../Ingredients/Ingredients'
-import PropTypes from 'prop-types';
-import Modal from '../Modal/Modal';
-import ModalIngridients from '../ModalIngridients/ModalIngridients';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { useInView } from 'react-intersection-observer';
+import styles from './BurgerIngredients.module.scss';
+import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
+import { bun, mainIngredient, sauce, one, two, three } from '../../utils/constants';
+import IngredientsList from '../IngredientsList/IngredientsList';
+import { useSelector, useDispatch } from 'react-redux';
+import { ingredientsAsync } from '../../services/asyncActions/ingredients';
+import { getCurrentIngredientAction } from "../../services/actions/currentIngredientActions";
 
-function BurgerIngredients({dataIngridients}) {
+function BurgerIngredients() {
 
-  const ingredientPropTypes = PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    image: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    type: PropTypes.string.isRequired,
-});
+    const [current, setCurrent] = useState(bun);
 
-BurgerIngredients.propTypes = {
-  dataIngridients: PropTypes.arrayOf(ingredientPropTypes.isRequired).isRequired
+    const [bonsRef, inViewBons] = useInView({
+        threshold: 0
+    })
+    const [mainsRef, inViewMains] = useInView({
+        threshold: 0
+    })
+    const [soucesRef, inViewSouces] = useInView({
+        threshold: 0
+    })
+
+    useEffect(() => {
+        if (inViewBons) {
+            setCurrent(bun)
+        } else if (inViewSouces) {
+            setCurrent(mainIngredient)
+        } else if (inViewMains) {
+            setCurrent(sauce)
+        }
+    }, [inViewBons, inViewMains, inViewSouces])
+
+    const ingredientsSelector = useSelector(store => store.ingredientsReducer);
+    const isSuccessIngredients = useSelector(store => store.ingredientsReducer.isSuccess)
+    const [ingredientsArray, setIngredientsArray] = useState(null)
+    const dispatch = useDispatch();
+    
+    useMemo(() => {
+        dispatch(ingredientsAsync())
+    }, [])
+
+    useMemo(() => {
+        setIngredientsArray(ingredientsSelector?.ingredients)
+    }, [ingredientsSelector])
+
+
+    function onClose() {
+        dispatch(getCurrentIngredientAction(null))
+    }
+
+    function scrollIntoCurrent(current) {
+        document.querySelector(`${current}`).scrollIntoView({ behavior: "smooth" });
+    }
+
+    return (
+        <section className={styles.section}>
+            <h1 className={styles.title}>Соберите бургер</h1>
+
+            <nav className={styles.navigation}>
+                <div id="bun">
+                    <Tab value='bun' active={current === bun} onClick={() => scrollIntoCurrent('#bunList')}>
+                        Булки
+                    </Tab>
+                </div>
+                <div id="main">
+                    <Tab value='main' active={current === mainIngredient} onClick={() => scrollIntoCurrent('#sauceList')}>
+                        Соусы
+                    </Tab>
+                </div>
+                <div id="sauce">
+                    <Tab id="sauce" value='sauce' active={current === sauce} onClick={() => scrollIntoCurrent('#mainList')}>
+                        Начинки
+                    </Tab>
+                </div>
+            </nav>
+
+            <ul className={styles.ingredientsList}>
+                <li>
+                    <IngredientsList title="Булки" currentType={bun} ingredients={ingredientsArray} currentRef={bonsRef} />
+                </li>
+                <li>
+                    <IngredientsList title="Соусы" currentType={sauce} ingredients={ingredientsArray} currentRef={soucesRef} />
+                </li>
+                <li>
+                    <IngredientsList title="Начинки" currentType={mainIngredient} ingredients={ingredientsArray} currentRef={mainsRef} />
+                </li>
+
+            </ul>
+
+        </section>
+    )
 }
-// const buns = useMemo(()=> dataIngridients.filter(item=>item.type === "bun"), [dataIngridients])
-// const mains = useMemo(()=> dataIngridients.filter(item=>item.type === "main"), [dataIngridients])
-// const sauces = useMemo(()=> dataIngridients.filter(item=>item.type === "sauce"), [dataIngridients])
-const [current, setCurrent] = useState('bun');
-const [openModal, setOpenModal] = useState(false);
-const [currentIngredient, setCurrentIngredient] = useState('');
 
-const onTabClick = (tab) => {
-  setCurrent(tab)
-  console.log('tab',tab)
-  const element = document.getElementById(tab)
-  console.log('element',element)
-  if(element) element.scrollIntoView({behavior: 'smooth'})
-}
-
-
-  return (
-    <div className={styles.main}>
-      <h2 className={styles.title}>Соберите бургер</h2>
-      <div className={styles.selector}>
-        <div id="bun">
-        <Tab value='bun' active={current === 'bun'} onClick={()=>onTabClick('bun')}>
-          Булки
-      </Tab>
-        </div>
-      <div  id="main">
-      <Tab value='main' active={current === 'main'} onClick={()=>onTabClick('main')}>
-          Соусы
-      </Tab>
-      </div>
-      <div  id="sauce">
-      <Tab id="sauce" value='sauce' active={current === 'sauce'} onClick={()=>onTabClick('sauce')}>
-          Начинки
-      </Tab>
-      </div>
-    </div>
-    <section className={styles. ingredientsTypes}>
-    <Ingredients title="Булки" dataIngridients={dataIngridients} type='bun' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
-    <Ingredients title="Соусы" dataIngridients={dataIngridients} type='sauce' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
-    <Ingredients title="Начинки" dataIngridients={dataIngridients} type='main' setOpenModal={setOpenModal} setCurrentIngredient={setCurrentIngredient}/>
-    </section>
-    {openModal && currentIngredient &&
-    <Modal setOpenModal={setOpenModal} title="Детали ингредиента" >
-      <ModalIngridients currentIngredient={currentIngredient}/>
-      </Modal>}
-      </div>
-  )
-}
-
-export default React.memo(BurgerIngredients)
+export default BurgerIngredients;

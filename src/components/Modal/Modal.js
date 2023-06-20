@@ -1,55 +1,45 @@
-import React, {useEffect} from 'react'
+import { useEffect } from "react";
 import PropTypes from 'prop-types';
-import ModalOverlay from '../ModalOverlay/ModalOverlay';
 import { createPortal } from "react-dom";
-import styles from "./Modal.module.css";
+import styles from "./Modal.module.scss";
+import ModalOverlay from "../ModalOverlay/ModalOverlay";
 import { CloseIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 
-const modalRoot = document.getElementById('modals')
+function Modal({ onClose, children, title }) {
 
-function Modal({title, setOpenModal, children}) {
-    Modal.propTypes = {
-        setOpenModal: PropTypes.func.isRequired, 
-        children: PropTypes.element.isRequired, 
-        title: PropTypes.string
-    }
+
     useEffect(() => {
-      const keyDownHandler = event => {
-        if (event.key === 'Escape') {
-          setOpenModal(false)
+        function handleEscape(event) {
+            if (event.code === 'Escape') {
+                onClose()
+            }
         }
-      };
-      document.addEventListener('keydown', keyDownHandler);
-      return () => {
-        document.removeEventListener('keydown', keyDownHandler);
-      };
-    }, []);
 
-  return createPortal(
-    <div className={styles.modal}>
-    <ModalOverlay setOpenModal={setOpenModal}/>
-    <div
-    tabIndex='0'
-    className={styles.container}
-    onKeyDown={(event)=>{
-        console.log('111331')
-        if(event.key === 'Escape'){
-            setOpenModal(false)
-            console.log('1111')
-        }
-        
-    }}>
-      <button type="button" className={styles.button} onClick={()=>setOpenModal(false)}>
-      <CloseIcon type="primary" />
-     </button>
-     <h2 className={styles.title}>{title}</h2>
-     <div className={styles.children}>
-        {children}
-    </div>
-    </div>
-    </div>
-    , modalRoot
-  )
+        document.addEventListener('keydown', handleEscape)
+        return () => document.removeEventListener('keydown', handleEscape)
+    }, [onClose])
+
+    return createPortal(
+        <div className={styles.modal}>
+            <ModalOverlay onClose={onClose} />
+            <div className={styles.modal__container}>
+                <button type="button" className={styles.close} onClick={onClose}><CloseIcon type="primary" /></button>
+                <h2 className={styles.title}>{title}</h2>
+                <div className={styles.child__container}>
+                    {children}
+                </div>
+
+            </div>
+        </div>
+        , document.querySelector('#modals')
+
+    )
 }
 
-export default Modal
+Modal.propTypes = {
+    onClose: PropTypes.func.isRequired,
+    children: PropTypes.element.isRequired,
+    title: PropTypes.string
+}
+
+export default Modal;
