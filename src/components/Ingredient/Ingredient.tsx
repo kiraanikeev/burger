@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { FC, useEffect } from 'react';
 import { useDrag } from "react-dnd";
 import PropTypes from 'prop-types';
 import { ingredientPropTypes } from '../../utils/ingredientPropTypes';
@@ -7,8 +7,12 @@ import { CurrencyIcon, Counter } from '@ya.praktikum/react-developer-burger-ui-c
 import { useDispatch } from "react-redux";
 import { getCurrentIngredientAction } from "../../services/actions/currentIngredientActions";
 import { Link, useLocation, useParams } from "react-router-dom";
+import { TIngredient } from '../../utils/types';
 
-function Ingredient({ item }) {
+type TItem = {
+    item: TIngredient
+}
+const Ingredient:FC<TItem> = ({ item }) => {
     const location = useLocation();
     const dispatch = useDispatch();
     const ingredientId = item['_id'];
@@ -36,8 +40,8 @@ function Ingredient({ item }) {
     )
 }
 
-Ingredient.propTypes = {
-    item: ingredientPropTypes
-}
+// Ingredient.propTypes = {
+//     item: ingredientPropTypes
+// }
 
 export default Ingredient;

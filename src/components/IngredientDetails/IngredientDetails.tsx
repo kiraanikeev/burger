@@ -4,12 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useLocation, useParams } from 'react-router-dom';
 import styles from './IngredientDetails.module.scss';
 import { ingredientsAsync } from '../../services/asyncActions/ingredients';
-
+import { useAppDispatch, useAppSelector } from '../../utils/hook';
+import { TIngredient } from '../../utils/types';
 function IngredientDetails() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { ingredientId } = useParams()
-    const ingredients = useSelector(store => store.ingredientsReducer.ingredients)
-    const currentIngredient = ingredients.find(item => item._id === ingredientId)
+    const ingredients = useAppSelector(store => store.ingredientsReducer.ingredients)
+    const currentIngredient = ingredients.find((item:TIngredient) => item._id === ingredientId)
 
     useMemo(() => {
         dispatch(ingredientsAsync())

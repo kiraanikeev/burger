@@ -4,10 +4,10 @@ import styles from './BurgerIngredients.module.scss';
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components';
 import { bun, mainIngredient, sauce, one, two, three } from '../../utils/constants';
 import IngredientsList from '../IngredientsList/IngredientsList';
-import { useSelector, useDispatch } from 'react-redux';
+// import { useSelector, useDispatch } from 'react-redux';
 import { ingredientsAsync } from '../../services/asyncActions/ingredients';
 import { getCurrentIngredientAction } from "../../services/actions/currentIngredientActions";
-
+import { useAppDispatch, useAppSelector } from '../../utils/hook';
 function BurgerIngredients() {
 
     const [current, setCurrent] = useState(bun);
@@ -32,10 +32,10 @@ function BurgerIngredients() {
         }
     }, [inViewBons, inViewMains, inViewSouces])
 
-    const ingredientsSelector = useSelector(store => store.ingredientsReducer);
-    const isSuccessIngredients = useSelector(store => store.ingredientsReducer.isSuccess)
+    const ingredientsSelector = useAppSelector(store => store.ingredientsReducer);
+    const isSuccessIngredients = useAppSelector(store => store.ingredientsReducer.isSuccess)
     const [ingredientsArray, setIngredientsArray] = useState(null)
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     
     useMemo(() => {
         dispatch(ingredientsAsync())
@@ -50,8 +50,8 @@ function BurgerIngredients() {
         dispatch(getCurrentIngredientAction(null))
     }
 
-    function scrollIntoCurrent(current) {
-        document.querySelector(`${current}`).scrollIntoView({ behavior: "smooth" });
+    function scrollIntoCurrent(current: string) {
+        (document.querySelector(`${current}`) as HTMLElement).scrollIntoView({ behavior: "smooth" });
     }
 
     return (
@@ -70,7 +70,7 @@ function BurgerIngredients() {
                     </Tab>
                 </div>
                 <div id="sauce">
-                    <Tab id="sauce" value='sauce' active={current === sauce} onClick={() => scrollIntoCurrent('#mainList')}>
+                    <Tab  value='sauce' active={current === sauce} onClick={() => scrollIntoCurrent('#mainList')}>
                         Начинки
                     </Tab>
                 </div>

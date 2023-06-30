@@ -3,13 +3,14 @@ import styles from './Login.module.scss';
 import Form from '../../components/Form/Form';
 import { authUserAsync } from '../../services/asyncActions/auth';
 import { useValidation } from '../../utils/Validate';
-
+import { useAppDispatch, useAppSelector } from '../../utils/hook';
+import { FormEvent } from 'react';
 function Login() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { values, handleChange, errors, isValid } = useValidation();
 
 
-    function handleSubmit(e) {
+    function handleSubmit(e:FormEvent) {
         e.preventDefault()
 
         dispatch(authUserAsync(values.email, values.password))

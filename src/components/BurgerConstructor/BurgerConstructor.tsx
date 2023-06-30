@@ -1,34 +1,38 @@
-import { useState, useMemo, useContext, useEffect } from "react";
+import { useState, useMemo, useContext, useEffect, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDrop } from "react-dnd";
 import styles from "./BurgerConstructor.module.scss";
 import { ConstructorElement, CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components';
 import Modal from "../Modal/Modal";
 import OrderDetails from "../OrderDetails/OrderDetails";
-import { useSelector, useDispatch } from 'react-redux';
+import { useAppDispatch, useAppSelector } from '../../utils/hook';
 import { addConstructorIngredientsAction, removeConstructorIngredientAction } from "../../services/actions/burgerConstructorActions";
 import { orderNumberAsync } from "../../services/asyncActions/order";
 import { increaseIngredientCountAction, decreaseIngredientCountAction } from "../../services/actions/ingredientsActions";
 import ConstructorIngredient from "../constructorIngredient/ConstructorIngredient";
 import { useCookies } from 'react-cookie';
+import { TIngredient } from "../../utils/types";
 
 function BurgerConstructor() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const [cookies, setCookie, removeCookie] = useCookies(['stellarBurger']);
+    const [cookies, setCookie, removeCookie] = useCookies<string>(['stellarBurger']);
     const [isOpen, setIsOpen] = useState(false);
-    const orderNumber = useSelector(store => store.orderReducer.order);
-    const ingredients = useSelector(store => (store.burgerConstructorReducer.constructorIngredients));
-    const isAuth = useSelector(store => store.authReducer.isUserAuth);
+    const orderNumber = useAppSelector(store => store.orderReducer.order);
+    const ingredients = useAppSelector(store => (store.burgerConstructorReducer.constructorIngredients));
+    const isAuth = useAppSelector(store => store.authReducer.isUserAuth);
 
+    type ItemI ={
+        item:TIngredient,
+    }
     const [movedIngredient, setMovedIngredient] = useState(null)
     const [{ isHover }, dropTarget] = useDrop({
         accept: "ingredient",
-        drop(item) {
+        drop(item: ItemI) {
             const itemCopy = JSON.parse(JSON.stringify(item.item));
 
-            const burgerBun = ingredients?.find(el => el.type === 'bun')
+            const burgerBun = ingredients?.find((el: TIngredient) => el.type === 'bun')
             if (burgerBun !== undefined && itemCopy.type === 'bun') {
                 dispatch(removeConstructorIngredientAction(burgerBun.constructorId))
                 dispatch(decreaseIngredientCountAction(burgerBun._id))
@@ -46,14 +50,14 @@ function BurgerConstructor() {
     });
 
 
-    const handleSubmit = (evt) => {
+    const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
         evt.preventDefault()
 
         if (isAuth) {
             const allIngredientsArray = [];
             allIngredientsArray.push(currentBun, ...ingredientsWithoutBuns, currentBun)
 
-            const idArray = allIngredientsArray.map(item => item._id)
+            const idArray = allIngredientsArray.map((item: TIngredient) => item._id)
 
             dispatch(orderNumberAsync(idArray, cookies.accessToken))
             setIsOpen(true)
@@ -65,11 +69,11 @@ function BurgerConstructor() {
         setIsOpen(false)
     }
 
-    const currentBun = useMemo(() => ingredients.find(item => item.type === 'bun'), [ingredients]);
+    const currentBun = useMemo(() => ingredients.find((item: TIngredient) => item.type === 'bun'), [ingredients]);
 
-    const ingredientsWithoutBuns = useMemo(() => ingredients.filter(item => item.type !== 'bun'), [ingredients])
+    const ingredientsWithoutBuns = useMemo(() => ingredients.filter((item: TIngredient) => item.type !== 'bun'), [ingredients])
 
-    const priceCount = useMemo(() => ingredients.reduce((total, item) => {
+    const priceCount = useMemo(() => ingredients.reduce((total: number, item: TIngredient) => {
         if (item.type !== 'bun') {
             return total + item.price
         } else if (currentBun._id === item._id) return total + (item.price * 2)
@@ -90,7 +94,7 @@ function BurgerConstructor() {
                     />}
             </div>
             <ul className={styles.ingredientsList} >
-                {ingredientsWithoutBuns.map((item, index) => {
+                {ingredientsWithoutBuns.map((item: TIngredient, index:number) => {
                     return (
                         <ConstructorIngredient key={item.constructorId} item={item} index={index} movedIngredient={movedIngredient} setMovedIngredient={setMovedIngredient} />
                     )

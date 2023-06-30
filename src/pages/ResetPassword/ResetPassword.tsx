@@ -1,25 +1,24 @@
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import styles from './ResetPassword.module.scss';
 import Form from '../../components/Form/Form';
 import { changePassword } from "../../utils/ingredientsApi";
 function ResetPassword() {
-    const [newPassword, setNewPassword] = useState(null)
-    const [token, setToken] = useState(null)
-    const [isSuccess, setIsSuccess] = useState(false)
-    function handleChangePassword(evt) {
-        const target = evt.target;
+    const [newPassword, setNewPassword] = useState<string | null>(null)
+    const [token, setToken] = useState<string | null>(null)
+    const [isSuccess, setIsSuccess] = useState<boolean>(false)
+    function handleChangePassword(evt:ChangeEvent) {
+        const target = evt.target as HTMLInputElement
         const value = target.value;
         setNewPassword(value)
     }
 
-    function handleChangeToken(evt) {
-        const target = evt.target;
-
+    function handleChangeToken(evt:ChangeEvent) {
+        const target = evt.target as HTMLInputElement
         const value = target.value;
         setToken(value)
     }
 
-    function handleSubmit(e) {
+    function handleSubmit(e : FormEvent) {
         e.preventDefault()
 
         changePassword(newPassword, token)

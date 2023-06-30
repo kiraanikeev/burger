@@ -1,8 +1,19 @@
 import PropTypes from 'prop-types';
 import styles from "./Form.module.scss";
 import { Link, useLocation } from "react-router-dom";
+import {FC, FormEventHandler, ReactNode } from 'react';
 
-function Form({ title, children, submitTitle, linkQuestion, link, linkText, onSubmit }) {
+type TFormProps ={
+title: string,
+children: ReactNode,
+submitTitle:string,
+linkQuestion:string,
+link:string,
+linkText:string,
+onSubmit: FormEventHandler
+}
+
+const Form:FC<TFormProps> = ({ title, children, submitTitle, linkQuestion, link, linkText, onSubmit }) => {
     const location = useLocation();
     
     return (
@@ -32,14 +43,14 @@ function Form({ title, children, submitTitle, linkQuestion, link, linkText, onSu
     )
 }
 
-Form.propTypes = {
-    title: PropTypes.string.isRequired,
-    children: PropTypes.array.isRequired,
-    submitTitle: PropTypes.string.isRequired,
-    linkQuestion: PropTypes.string,
-    link: PropTypes.string.isRequired,
-    linkText: PropTypes.string.isRequired,
-    onSubmit: PropTypes.func.isRequired
-}
+// Form.propTypes = {
+//     title: PropTypes.string.isRequired,
+//     children: PropTypes.array.isRequired,
+//     submitTitle: PropTypes.string.isRequired,
+//     linkQuestion: PropTypes.string,
+//     link: PropTypes.string.isRequired,
+//     linkText: PropTypes.string.isRequired,
+//     onSubmit: PropTypes.func.isRequired
+// }
 
 export default Form;

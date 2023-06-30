@@ -19,18 +19,26 @@ import { isErrorAction } from '../../services/actions/auth';
 import PageNotFound from '../../pages/PageNotFound/PageNotFound';
 import Modal from '../Modal/Modal';
 import Preloader from '../Preloader/Preloader';
-import { TAppState, TDispatch } from '../../services/store';
+// import { TAppState, TDispatch } from '../../services/store';
+import { useAppDispatch, useAppSelector } from '../../utils/hook';
 
 function App() {
   const [cookies, setCookie, removeCookie] = useCookies<string>(['stellarBurger']);
 
-  const currentIngredient = useSelector((store:TAppState) => store.currentIngredientReducer.currentIngredient)
-  const isAuth = useSelector((store:TAppState) => store.authReducer.isUserAuth);
-  const isLoading = useSelector((store:TAppState) => store.authReducer.isLoading);
-  const accessTokenSelector = useSelector((store:TAppState) => store.authReducer.accessToken);
-  const refreshTokenSelector = useSelector((store:TAppState) => store.authReducer.refreshToken);
+  // const currentIngredient = useSelector((store:TAppState) => store.currentIngredientReducer.currentIngredient)
+  // const isAuth = useSelector((store:TAppState) => store.authReducer.isUserAuth);
+  // const isLoading = useSelector((store:TAppState) => store.authReducer.isLoading);
+  // const accessTokenSelector = useSelector((store:TAppState) => store.authReducer.accessToken);
+  // const refreshTokenSelector = useSelector((store:TAppState) => store.authReducer.refreshToken);
 
-  const dispatch:TDispatch = useDispatch();
+    const currentIngredient = useAppSelector((store) => store.currentIngredientReducer.currentIngredient)
+  const isAuth = useAppSelector((store) => store.authReducer.isUserAuth);
+  const isLoading = useAppSelector((store) => store.authReducer.isLoading);
+  const accessTokenSelector = useAppSelector((store) => store.authReducer.accessToken);
+  const refreshTokenSelector = useAppSelector((store) => store.authReducer.refreshToken);
+
+  // const dispatch:TDispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   let { state } = useLocation()
   const location = useLocation();

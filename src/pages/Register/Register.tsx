@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect,FormEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useCookies } from "react-cookie";
 import { useNavigate } from 'react-router-dom';
@@ -6,12 +6,12 @@ import styles from './Register.module.scss';
 import Form from '../../components/Form/Form';
 import { registerUserAsync } from '../../services/asyncActions/auth';
 import { useValidation } from '../../utils/Validate';
-
+import { useAppDispatch } from '../../utils/hook';
 function Register() {
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const { values, handleChange, errors, isValid } = useValidation();
 
-    function handleSubmit(e) {
+    function handleSubmit(e:FormEvent) {
         e.preventDefault()
 
         dispatch(registerUserAsync(values.email, values.password, values.name))
